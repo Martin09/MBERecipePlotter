@@ -6,7 +6,9 @@ Try it with the included recipe file "D1-16-10-25-B.txt".
 
 # Screenshots
 Command line execution:
-![Interface Screenshot](Images/Screenshot2.JPG)
+
+![Execution](Images/Screenshot2.JPG)
 
 Interface:
+
 ![Interface Screenshot](Images/Screenshot.JPG)
