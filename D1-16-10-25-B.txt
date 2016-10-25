@@ -1,0 +1,73 @@
+# Ga predeposition growth
+
+# PECVD on Si e-beam for membrane 
+# Substrate is Sq-Si 111
+# Short 15min growth to check nucleation of GaAs in slits on Si
+# As opening of 60%
+
+#Copy of Gozde's old recipe "D1-14-09-26-C"
+#Modified to more or less conform to current flux calibrations
+
+# Define growth parameters
+Define T_Ga = 910 # 0.3 A/s
+Define T_Manip = 740
+Define As_Valve = 53
+Define Ga_Predep_Time = 30s # 0.9 nm
+Define Growth_Time = 15min #27 nm
+Define Wait_Time = 5min # Annealing
+
+# Ensure no recipe starts if the standby conditions are not met:
+Include "CheckStandby_August2014.txt"
+
+#Start rotation and ramps
+Set Manip.RS.RPM 7
+Set Manip.PV.Rate 50
+Set Manip.OP.Rate 0
+Set Manip.PV.TSP 850
+Set Ga.PV.Rate 40
+Set Ga.OP.Rate 0
+Set Ga.PV.TSP $T_Ga$
+Wait 30min
+
+# record pyrometer temperature
+Wait 1min
+Open Pyrometer
+Wait 1min
+Close Pyrometer
+
+# go to growth conditions
+Set Manip.PV.Rate 30
+Set Manip.PV.TSP $T_Manip$
+Calculate waitT = $T_Manip$ + 3
+Wait Until  Manip.PV < $waitT$
+
+# record pyrometer temperature
+Wait 1min
+Open Pyrometer
+Wait 1min
+Close Pyrometer
+
+# open arsenic valve, have it opening during Ga pre-dep step
+Set AsCracker.Valve.OP $As_Valve$
+
+# Open Ga shutter for Ga pre-deposition
+Open Ga
+Wait $Ga_Predep_Time$
+Close Ga
+
+# Wait 5 minutes
+Wait $Wait_Time$
+
+# Open As shutter and start growth
+Open Ga,As
+Wait $Growth_Time$
+Close Ga
+
+# Cool down cells
+Set Ga.PV.TSP 550
+Set Manip.PV.TSP 200
+Set Manip.PV.Rate 100
+Wait Until  Manip.PV < 300
+Close As
+Set AsCracker.Valve.OP 0
+Set Manip.RS.RPM 0
